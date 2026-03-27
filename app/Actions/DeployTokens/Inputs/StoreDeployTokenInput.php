@@ -33,6 +33,8 @@ class StoreDeployTokenInput extends Input
     {
         return [
             'abilities.*' => [new Enum(TokenAbility::class)],
+            'repositories' => ['nullable', 'array'],
+            'repositories.*' => ['integer', 'exists:repositories,id'],
             'packages' => ['nullable', 'array'],
             'packages.*' => ['integer', 'exists:packages,id'],
         ];

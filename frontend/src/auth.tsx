@@ -24,9 +24,12 @@ export function AuthProvider({ children, user }: { children: React.ReactNode; us
     }, [user])
 
     const logout = useCallback(async () => {
-        await apiLogout()
-        queryClient.clear()
-        setUser(null)
+        try {
+            await apiLogout()
+        } finally {
+            queryClient.clear()
+            setUser(null)
+        }
     }, [])
 
     const login = useCallback((user: User) => {

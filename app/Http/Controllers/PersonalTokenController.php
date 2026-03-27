@@ -38,7 +38,7 @@ readonly class PersonalTokenController extends Controller
             ->allowedFilters([
                 SearchFilter::allowed(['name']),
             ])
-            ->paginate((int) $request->query('size', '10'));
+            ->paginate(min((int) $request->query('size', '10'), 100));
 
         return PersonalTokenResource::collection($tokens)
             ->toResponse($request);

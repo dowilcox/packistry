@@ -66,7 +66,7 @@ api.interceptors.response.use(
             }
 
             if (error.response?.status === 401 && error.config?.url !== '/me') {
-                window.location.reload()
+                window.location.href = '/login'
             }
         }
 

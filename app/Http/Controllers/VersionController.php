@@ -31,7 +31,7 @@ readonly class VersionController extends Controller
                 'name',
                 'created_at',
             ])
-            ->paginate((int) $request->query('size', '10'));
+            ->paginate(min((int) $request->query('size', '10'), 100));
 
         return VersionResource::collection($packages)
             ->toResponse($request);

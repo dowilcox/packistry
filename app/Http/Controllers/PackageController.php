@@ -47,7 +47,7 @@ readonly class PackageController extends Controller
                 'total_downloads',
                 'name',
             ])
-            ->paginate((int) $request->query('size', '10'));
+            ->paginate(min((int) $request->query('size', '10'), 100));
 
         return PackageResource::collection($packages)
             ->toResponse($request);

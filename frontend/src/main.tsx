@@ -6,6 +6,8 @@ import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from '@/auth'
 import { useMe } from '@/api/hooks'
+import { ErrorBoundary } from '@/components/error-boundary'
+import { isAxiosError } from 'axios'
 
 const router = createRouter({
     routeTree,
@@ -27,7 +29,13 @@ const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             staleTime: 60000,
-            retry: false,
+            retry: (failureCount, error) => {
+                if (isAxiosError(error) && error.response && error.response.status < 500) {
+                    return false
+                }
+
+                return failureCount < 2
+            },
         },
     },
 })
@@ -47,7 +55,7 @@ function App() {
     const query = useMe()
 
     if (query.isLoading) {
-        return
+        return <div className="flex h-screen items-center justify-center bg-background" />
     }
 
     return (
@@ -63,7 +71,9 @@ if (!rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement)
     root.render(
         <QueryClientProvider client={queryClient}>
-            <App />
+            <ErrorBoundary>
+                <App />
+            </ErrorBoundary>
         </QueryClientProvider>
     )
 }

@@ -8,6 +8,7 @@ use App\Actions\Users\Inputs\UpdateUserInput;
 use App\Enums\Role;
 use App\Exceptions\EmailAlreadyTakenException;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UpdateUser
 {
@@ -36,16 +37,18 @@ class UpdateUser
             $user->role = $input->role;
         }
 
-        $user->save();
+        return DB::transaction(function () use ($user, $input): User {
+            $user->save();
 
-        if (is_array($input->repositories)) {
-            $user->repositories()->sync($input->repositories);
-        }
+            if (is_array($input->repositories)) {
+                $user->repositories()->sync($input->repositories);
+            }
 
-        if (is_array($input->packages)) {
-            $user->packages()->sync($input->packages);
-        }
+            if (is_array($input->packages)) {
+                $user->packages()->sync($input->packages);
+            }
 
-        return $user;
+            return $user;
+        });
     }
 }

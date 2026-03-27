@@ -35,7 +35,7 @@ readonly class UserController extends Controller
             ])
             ->allowedSorts(['name', 'email', 'role'])
             ->with('authenticationSource')
-            ->paginate((int) $request->query('size', '10'));
+            ->paginate(min((int) $request->query('size', '10'), 100));
 
         return UserResource::collection($users)
             ->toResponse($request);

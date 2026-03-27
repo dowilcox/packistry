@@ -43,7 +43,7 @@ readonly class RepositoryController extends Controller
                 'path',
                 'packages_count',
             ])
-            ->paginate((int) $request->query('size', '10'));
+            ->paginate(min((int) $request->query('size', '10'), 100));
 
         return RepositoryResource::collection($repositories)
             ->toResponse($request);

@@ -45,7 +45,7 @@ readonly class DeployTokenController extends Controller
             ->select('deploy_tokens.*')
             ->leftJoin('tokens', 'tokens.tokenable_id', '=', 'deploy_tokens.id')
             ->where('tokens.tokenable_type', DeployToken::class)
-            ->paginate((int) $request->query('size', '10'));
+            ->paginate(min((int) $request->query('size', '10'), 100));
 
         return DeployTokenResource::collection($tokens)
             ->toResponse($request);
